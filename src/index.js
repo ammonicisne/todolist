@@ -16,12 +16,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch("http://127.0.0.1:5000/todos")
-    .then(response => response.json())
-    .then(data =>
-      this.setState({
-        todos: data
-      }))
+    fetch("https://aic-todo-list-api.herokuapp.com/todos")
+      .then(response => response.json())
+      .then(data =>
+        this.setState({
+          todos: data
+        })
+      );
   }
 
   onChange = event => {
@@ -33,48 +34,47 @@ class App extends React.Component {
   renderTodos = () => {
     return this.state.todos.map(item => {
       return (
-      <TodoItem 
-        key={item[0]}
-        id={item[0]}
-        title={item[1]}
-        done={item[2]}
-        deleteItem={this.deleteItem}
-      />
-      )
+        <TodoItem
+          key={item[0]}
+          id={item[0]}
+          title={item[1]}
+          done={item[2]}
+          deleteItem={this.deleteItem}
+        />
+      );
     });
   };
 
   addTodo = event => {
     event.preventDefault();
     axios({
-      method: "post", 
-      url: "http://127.0.0.1:5000/add-todo",
+      method: "post",
+      url: "https://aic-todo-list-api.herokuapp.com/todo",
       headers: { "content-type": "application/json" },
       data: { title: this.state.todo, done: false }
     })
-    .then(data => {
-      this.setState({
-        todos: [...this.state.todos, data.data],
-        todo: ""
+      .then(data => {
+        this.setState({
+          todos: [...this.state.todos, data.data],
+          todo: ""
+        });
       })
-    })
-    .catch(error => console.log(error));
+      .catch(error => console.log(error));
   };
 
   deleteItem = id => {
-    fetch(`http://127.0.0.1:5000/todo/${id}`, {
+    fetch(`https://aic-todo-list-api.herokuapp.com/todo/${id}`, {
       method: "DELETE"
     })
-    .then(
-      this.setState({
-        todos: this.state.todos.filter(item => {
-          return item[0] !== id;
+      .then(
+        this.setState({
+          todos: this.state.todos.filter(item => {
+            return item[0] !== id;
+          })
         })
-      })
-    )
-    .catch(error => console.log(error))
-  }
-
+      )
+      .catch(error => console.log(error));
+  };
 
   render() {
     return (
